@@ -1,0 +1,139 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}سبد خرید{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .form-header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .form-content {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .form-content form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-content form .form-group {
+            margin-bottom: 15px;
+        }
+        .form-content form .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-content form .form-group input,
+        .form-content form .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .form-content form button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .form-content form button:hover {
+            background: #45a049;
+        }
+        .form-content form .payment-button {
+            background: #007BFF;
+        }
+        .form-content form .payment-button:hover {
+            background: #0056b3;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="form-header">
+            <h1>فرم آدرس</h1>
+        </div>
+        <div class="form-content">
+            <form id="address-form" method="post" action="{% url 'cart:add_address' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_province">نام</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_province">نام خانوادگی</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_province">استان</label>
+                    {{ form.province }}
+                </div>
+                <div class="form-group">
+                    <label for="id_city">شهر</label>
+                    {{ form.city }}
+                </div>
+                <div class="form-group">
+                    <label for="id_detailed_address">آدرس دقیق</label>
+                    {{ form.detailed_address }}
+                </div>
+                <div class="form-group">
+                    <label for="id_postal_code">کد پستی</label>
+                    {{ form.postal_code }}
+                </div>
+                <div class="form-group">
+                    <label for="id_plaque">پلاک</label>
+                    {{ form.plaque }}
+                </div>
+                <div class="form-group">
+                    <label for="id_recipient_phone">شماره گیرنده</label>
+                    {{ form.recipient_phone }}
+                </div>
+                <button type="button" class="payment-button" onclick="submitFormAndRedirect()">پرداخت</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $("#id_province").change(function () {
+            var url = "{% url 'cart:load_cities' %}";
+            var provinceId = $(this).val();
+            $.ajax({
+                url: url,
+                data: {
+                    'province_id': provinceId
+                },
+                success: function (data) {
+                    $("#id_city").html('');
+                    $.each(data, function (key, value) {
+                        $("#id_city").append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        });
+
+        function submitFormAndRedirect() {
+            var form = document.getElementById('address-form');
+            form.submit();
+            window.location.href = "#";
+        }
+    </script>
+{% endblock %}

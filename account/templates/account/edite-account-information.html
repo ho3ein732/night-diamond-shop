@@ -1,0 +1,274 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}اطلاعــات شخصی{{ product.name }}{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .profile-header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .profile-header img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            border: 3px solid #fff;
+        }
+        .profile-header h1 {
+            flex-grow: 1;
+            margin: 0;
+            padding: 0 20px;
+        }
+        .profile-content {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .save-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .save-button:hover {
+            background: #45a049;
+        }
+        #phone {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #edite-phone {
+            color: darkgray;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .checkmark {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4CAF50;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            background-color: white;
+            box-shadow: inset 0px 0px 0px #4CAF50;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4CAF50;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+        }
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px white;
+            }
+        }
+            .modal-actions a {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #4CAF50;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+        margin: 10px;
+    }
+    .modal-actions a:hover {
+        background: #45a049;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="profile-header">
+        {% if user.profile.profile_image %}
+            <img src="{{ user.profile.profile_image.url }}" alt="Profile Image">
+        {% else %}
+            <img src="{% static 'images/cJNa2Ve0TwwNHYLIdUvnIocGqbabBBMflbvt1v5q.jpeg_512X512X70.jpeg' %}" alt="Default Profile Image">
+        {% endif %}
+        <h1>ویرایش اطلاعات شخصی {{ user.first_name }} {{ user.last_name }}</h1>
+    </div>
+    <div class="container">
+        <div class="profile-content">
+            <form id="profile-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="phone">شماره تلفن</label>
+                    <p id="phone">{{ user.phone }}</p>
+                    <p><a href="{% url 'account:verify-new-phone' %}" id="edite-phone">تغییر شماره تلفن</a></p>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">نام</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">نام خانوادگی</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                </div>
+                <button type="submit" class="save-button">ذخیره تغییرات</button>
+            </form>
+        </div>
+    </div>
+    <div id="add-to-cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">×</span>
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <p>اطلاعات با موفقیت ذخیره شد!</p>
+<div class="modal-actions">
+    <a href="{% url 'account:profile' %}" class="continue-shopping">رفتن به پروفایل</a>
+    <a href="{% url 'store:products' %}" class="go-to-cart">لیست محصولات</a>
+</div>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function(){
+            $('.save-button').click(function(event){
+                event.preventDefault();
+                var form = $('#profile-form')[0];
+                var formData = new FormData(form);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "account:edite_account_information" %}',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        showModal();
+                    },
+                    error: function (xhr, errmsg, err) {
+                        alert(xhr.status + ": " + xhr.responseText);
+                    }
+                });
+            });
+
+            function showModal() {
+                var modal = document.getElementById("add-to-cart-modal");
+                var span = document.getElementsByClassName("close-btn")[0];
+
+                modal.style.display = "block";
+
+                span.onclick = function() {
+                    modal.style.display = "none";
+                }
+
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+
+                // بستن مودال با کلیک روی "ادامه خرید"
+                //$('.continue-shopping').click(function(event) {
+                    //event.preventDefault();
+                    //modal.style.display = "none";
+                //});
+
+            }
+        });
+    </script>
+{% endblock %}

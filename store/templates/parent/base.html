@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+	<link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+{#____________________________#}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>الــماس شب | {% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    {% include 'partials/header.html' %}
+    {% block content %}{% endblock %}
+    {% include 'partials/footer.html' %}
+</body>
+</html>

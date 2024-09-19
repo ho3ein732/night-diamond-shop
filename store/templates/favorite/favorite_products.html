@@ -1,0 +1,150 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}محصــولات مورد علافه{{ product.name }}{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, darkgoldenrod, #DAA520);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .header:hover {
+            transform: scale(1.05);
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+        .form-container:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .product-item {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+        }
+        .product-item:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .product-item h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .product-item p {
+            margin: 10px 0;
+            font-weight: 400;
+        }
+        .favorite-button i {
+            font-size: 24px;
+            color: #FF4081;
+            transition: color 0.3s;
+        }
+        .favorite-button:hover i {
+            transform: scale(1.2);
+        }
+        .remove-button {
+            background-color: #FF4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .remove-button:hover {
+            background-color: #e6005c;
+            transform: scale(1.05);
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1>Favorite Products</h1>
+        </div>
+        <div class="form-container">
+            {% if products %}
+                <ul>
+                    {% for favorite in products %}
+                        <li class="product-item">
+                            <a href="{{ favorite.product.get_absolute_url }}">
+                                <h2>{{ favorite.product.name }}</h2>
+                                <p>{{ favorite.product.description|truncatewords:20 }}</p>
+                                <p>Price: {{ favorite.product.price }}</p>
+                                <p>Added at: {{ favorite.added_at }}</p>
+                            </a>
+                            <form method="post" action="{% url 'store:remove_favorite' favorite.product.id favorite.product.slug %}">
+
+                                {% csrf_token %}
+                                <button type="submit" class="remove-button">Remove</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No favorite products found.</p>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function(){
+            $('.remove-button').click(function(event){
+                event.preventDefault();
+                var button = $(this);
+                var form = button.closest('form');
+                var  url = form.attr('action');
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: form.serialize(),
+                    success: function (response) {
+                    if (response.success){
+                        button.closest('.product-item').remove();
+                        if ($('.product-item').length === 0){
+                            $('.form-container').html('<p>No favorite products found.</p>')
+                        }
+                    }else {
+                        alert('Error' + response.error)
+                    }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('an error' + error)
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}
+
+
+

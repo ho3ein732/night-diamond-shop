@@ -1,0 +1,363 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}مشــخصات {{ product.name }}{% endblock %}
+{% block head %}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, darkgoldenrod, #DAA520);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .header:hover {
+            transform: scale(1.05);
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+        .form-container:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: darkgoldenrod;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .submit-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .submit-button:hover {
+            background: linear-gradient(135deg, #45a049, #66bb6a);
+            transform: scale(1.05);
+        }
+
+        .favorite-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #FF4081, #FF80AB);
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            margin-top: 10px;
+        }
+        .favorite-button:hover {
+            background: linear-gradient(135deg, #E91E63, #F06292);
+            transform: scale(1.05);
+        }
+
+        .slick-slide img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        .slick-slide img:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            transition: opacity 0.3s;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content p {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .modal-actions a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .modal-actions a:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .checkmark {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4CAF50;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            background-color: white;
+            box-shadow: inset 0px 0px 0px #4CAF50;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4CAF50;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px white;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1>{{ product.name }}</h1>
+        </div>
+        <div class="form-container">
+            <p>{{ product.description }}</p>
+            <div class="slider">
+                {% for image in product.images.all %}
+                    <div><img src="{{ image.file.url }}" alt="Product Image"></div>
+                {% endfor %}
+            </div>
+        <div class="product_features">
+            {% for feature in features %}
+                {{ feature.name }} : {{ feature.value }}
+            {% endfor %}
+        </div>
+
+            <button type="button" id="add-to-cart" class="submit-button">افزودن به سبد خرید</button>
+            <button type="button" id="favorite-btn" class="favorite-button">
+                {% if saved %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}
+            </button>
+
+            <div id="add-to-cart-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">×</span>
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                    <p>محصول به سبد خرید اضافه شد!</p>
+                    <div class="modal-actions">
+                        <a href="#" class="continue-shopping">ادامه خرید</a>
+                        <a href="{% url 'cart:cart_detail' %}" class="go-to-cart">رفتن به سبد خرید</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="add-to-favorite-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">×</span>
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                    <p>
+                        {% if saved %}
+                        	محصول از علاقه‌مندی‌ها حذف شد!
+                        {% else %}
+                            محصول به علاقه‌مندی‌ها اضافه شد!
+                        {% endif %}
+                    </p>
+                    <div class="modal-actions">
+                        <a href="#" class="continue-shopping">ادامه خرید</a>
+                        <a href="{% url 'store:favorite_products' %}" class="go-to-favorites">رفتن به علاقه‌مندی‌ها</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    $(document).ready(function(){
+        $('#add-to-cart').click(function(){
+            var button = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "cart:add_to_cart" product.id %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    console.log(data);
+                    $('#cart-item').text(data.item_count);
+                    showModal('#add-to-cart-modal');
+                },
+                error: function (xhr, errmsg, err) {
+                    alert(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+
+        $('#favorite-btn').click(function() {
+            var button = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "store:add_to_favorite" product.id product.slug %}',
+                data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(data){
+                    showModal('#add-to-favorite-modal');
+                    if (data.saved) {
+                        $('#favorite-btn').text('حذف از علاقه‌مندی‌ها');
+                    } else {
+                        $('#favorite-btn').text('افزودن به علاقه‌مندی‌ها');
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+                    alert(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+
+        function showModal(modalId) {
+            var modal = document.querySelector(modalId);
+            var span = modal.querySelector(".close-btn");
+
+            modal.style.display = "block";
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            modal.querySelector('.continue-shopping').onclick = function(event) {
+                event.preventDefault();
+                modal.style.display = "none";
+            };
+        }
+    });
+    </script>
+{% endblock %}

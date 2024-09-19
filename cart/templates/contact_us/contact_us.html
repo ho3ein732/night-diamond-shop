@@ -1,0 +1,195 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}تماس با ما{% endblock %}
+{% block head %}
+    <style>
+        @font-face {
+            font-family: 'IranSans';
+            src: url('{% static 'fonts/FontsFree-Net-ir_sans.ttf' %}') format('woff2');
+        }
+        body {
+            font-family: 'IranSans', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            background-image: url('{% static 'images/ei_1632460965263.jpg' %}');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .contact-header {
+            background: rgba(37, 45, 64, 0.7);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .contact-content {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .contact-item {
+            margin-bottom: 20px;
+        }
+        .contact-item h3 {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(37, 45, 64, 0.8);
+        }
+        .contact-item p {
+            margin: 5px 0;
+            color: rgba(37, 45, 64, 0.8);
+        }
+        .contact-form {
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: rgba(37, 45, 64, 0.8);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(37, 45, 64, 0.8);
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: rgba(37, 45, 64, 0.8);
+            box-shadow: 0 0 5px rgba(37, 45, 64, 0.5);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        .submit-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(37, 45, 64, 0.8);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            background: rgba(31, 38, 51, 0.8);
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+        }
+        .social-links img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .map-container {
+            margin-top: 30px;
+            width: 100%;
+            height: 450px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="contact-header">
+            <h1>تماس با ما</h1>
+        </div>
+        <div class="contact-content">
+            <div class="contact-item">
+                <h3>ایمیل</h3>
+                <p>example@example.com</p>
+            </div>
+            <div class="contact-item">
+                <h3>تلفن</h3>
+                <p>+98 21 1234 5678</p>
+            </div>
+            <div class="contact-item">
+                <h3>آدرس</h3>
+                <p>تهران، خیابان مثال، پلاک 123</p>
+            </div>
+            <div class="contact-item">
+                <h3>ساعات کاری</h3>
+                <p>شنبه تا چهارشنبه: 9 صبح تا 5 عصر</p>
+                <p>پنج‌شنبه: 9 صبح تا 1 ظهر</p>
+            </div>
+            <div class="contact-form">
+                <h3>فرم تماس</h3>
+                <form method="post" action="{% url 'store:contact_us' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_name">نام</label>
+                        <input type="text" id="id_name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email">ایمیل</label>
+                        <input type="email" id="id_email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_message">پیام</label>
+                        <textarea id="id_message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">ارسال</button>
+                </form>
+            </div>
+            <div class="social-links">
+                <a href="https://eitaa.com/yourprofile" target="_blank">
+                    <img src="{% static 'icons/eta.jpg' %}" alt="Eitaa">
+                </a>
+                <a href="https://sapp.ir/yourprofile" target="_blank">
+                    <img src="{% static 'icons/Soroush.jpg' %}" alt="Soroush">
+                </a>
+                <a href="https://rubika.ir/yourprofile" target="_blank">
+                    <img src="{% static 'icons/rubika2.png' %}" alt="Rubika">
+                </a>
+                <a href="https://t.me/yourprofile" target="_blank">
+                    <img src="{% static 'icons/telegram.png' %}" alt="Telegram">
+                </a>
+                <a href="https://instagram.com/yourprofile" target="_blank">
+                    <img src="{% static 'icons/instgram.png' %}" alt="Instagram">
+                </a>
+                <a href="https://twitter.com/yourprofile" target="_blank">
+                    <img src="{% static 'icons/x.jpeg' %}" alt="Twitter">
+                </a>
+            </div>
+            <div class="map-container">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d346.3870813043704!2d48.80215155014247!3d34.314631212920645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1724422649619!5m2!1sen!2s"
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}جزئیات مرجوعی{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        .return-detail-header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .return-detail {
+            background: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .return-detail h2 {
+            margin-top: 0;
+        }
+        .return-detail p {
+            margin: 10px 0;
+        }
+        .return-images {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .return-images img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="return-detail-header">
+            <h1>جزئیات مرجوعی</h1>
+        </div>
+        <div class="return-detail">
+            <h2>{{ item.product.name }}</h2>
+            <p>وضعیت: {{ item.status }}</p>
+            <p>تاریخ: {{ item.created_at|date:"Y-m-d" }}</p>
+            <p>دلیل: {{ item.reason }}</p>
+            <p>ایمیل: {{ item.email }}</p>
+            <p>تلفن: {{ item.phone }}</p>
+
+            <div class="return-images">
+                {% for image in returned_item.images.all %}
+                    <img src="{{ image.image.url }}" alt="Return Image">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

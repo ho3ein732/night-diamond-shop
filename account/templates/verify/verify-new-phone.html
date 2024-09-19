@@ -1,0 +1,74 @@
+{% extends 'parent/base.html' %}
+{% block title %}تایید شماره تلفن{% endblock %}
+{% block head %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f2f5;
+        {#display: flex;#}
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .form-container {
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #4CAF50;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .btn:hover {
+        background: #45a049;
+    }
+    .error {
+        color: red;
+        margin-top: 5px;
+    }
+</style>
+
+
+{% endblock %}
+{% block content %}
+<form method="post" class="form-container">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="id_phone">شماره تلفن جدید</label>
+        <input type="text" id="id_phone" name="phone" value="{{ form.phone.value|default:user.phone }}" class="form-control">
+        {% if form.phone.errors %}
+            <div class="error">{{ form.phone.errors }}</div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">ارسال کد تایید</button>
+</form>
+
+{% endblock %}

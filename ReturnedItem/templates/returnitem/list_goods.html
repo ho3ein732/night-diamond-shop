@@ -1,0 +1,71 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}لیست مرجوعی‌ها{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        .return-list-header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .return-list {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .return-item {
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+        .return-item:last-child {
+            border-bottom: none;
+        }
+        .return-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .return-item p {
+            margin: 5px 0;
+        }
+        .return-item a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .return-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="return-list-header">
+            <h1>لیست مرجوعی‌ها</h1>
+        </div>
+        <div class="return-list">
+            {% for item in goods %}
+                <div class="return-item">
+                    <h3>{{ item.product.name }}</h3>
+                    <p>وضعیت: {{ item.status }}</p>
+                    <p>تاریخ: {{ item.created_at|date:"Y-m-d" }}</p>
+                    <a href="{% url 'return-item:details-returned-goods' item.id %}">مشاهده جزئیات</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

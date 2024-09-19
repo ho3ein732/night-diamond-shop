@@ -1,0 +1,135 @@
+{% extends 'parent/base.html' %}
+{% block title %}جزئیات تیکت{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .chat-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            max-width: 60%;
+            position: relative;
+            clear: both;
+        }
+        .sender {
+            background: #e1ffc7;
+            margin-left: auto;
+            text-align: right;
+        }
+        .receiver {
+            background: #f1f1f1;
+            margin-right: auto;
+            text-align: left;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .submit-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-button:hover {
+            background: #45a049;
+        }
+        .new-ticket-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+        .new-ticket-button:hover {
+            background: #0056b3;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1>جزئیات تیکت: {{ ticket.subject }}</h1>
+        </div>
+        <div class="chat-container">
+            {% for message in messages %}
+                <div class="message {% if message.is_admin %}receiver{% else %}sender{% endif %}">
+                    {{ message.content }}
+                </div>
+            {% endfor %}
+        </div>
+        {% if not is_closed %}
+            <div class="form-container">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="content">پیام جدید</label>
+                        <textarea id="content" name="content" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">ارسال</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="form-container">
+                <p>این تیکت بسته شده است و نمی‌توانید پیام جدید ارسال کنید.</p>
+                <a href="{% url 'ticket:create_ticket' %}" class="new-ticket-button">ارسال تیکت جدید</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

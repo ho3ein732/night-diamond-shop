@@ -1,0 +1,16 @@
+{% extends 'parent/base.html' %}
+{% block title %}تایید شماره تلفن{% endblock %}
+{% block content %}
+    <h2>تأیید کد</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">تأیید</button>
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

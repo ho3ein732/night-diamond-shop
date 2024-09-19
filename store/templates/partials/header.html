@@ -1,0 +1,47 @@
+{% load static %}
+<header class="header_content">
+        <div class="navgation_header">
+            <div class="left_nav">
+                <div class="log">
+                    <span>تولیدی المـاس شب</span>
+                </div>
+            </div>
+            <div class="center_nav">
+                <ul>
+                    <li>
+                        <a href="{% url 'store:products' %}" class="cative">صفحـه اصلی</a>
+                    </li>
+
+                    <li>
+                        {% with item_count=cart|length %}
+
+                        <a href="{% url 'cart:cart_detail' %}">سبد خرید🛒</a><br><a href="#" id="cart-item">{{ item_count }}</a>
+                        {% endwith %}
+                    </li>
+                    <li>
+                        <a href="{% url 'store:contact_us' %}">تمـاس با ما</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="right_nav">
+                <div class="link_nav">
+                    {% if user.is_authenticated  %}
+                    <a href="{% url 'account:profile' %}">پروفـایل</a>
+                    {% else %}
+                        <a href="{% url 'account:verify-phone' %}">ثبت نام</a>
+                    {% endif %}
+                {% if user.is_authenticated  %}
+                    <a href="{% url 'account:logout_user' %}" class="active">خروج</a>
+                {% else %}
+                    <a href="{% url 'account:login_user' %}" class="active">ورود</a>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <form method="post" action="{% url 'store:product_search'%}">
+            {% csrf_token %}
+            <input type="text" name="query" placeholder="کلمه مورد نظر را وارد کنید..." required>
+            <input type="submit" value="جستجو">
+        </form>
+    </header>
+{#_____________________________________#}

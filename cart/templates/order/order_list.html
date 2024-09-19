@@ -1,0 +1,119 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}لیست سفارش ها{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .order-list {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .order-list:hover {
+            transform: translateY(-5px);
+        }
+        .order-header {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .order-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            transition: background 0.3s;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-item:hover {
+            background: #f9f9f9;
+        }
+        .order-item h3 {
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .order-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .order-item span {
+            display: block;
+            margin-top: 5px;
+            color: #777;
+        }
+        .order-item .details {
+            font-size: 0.9em;
+            color: #888;
+        }
+        .order-item .item-details {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 5px;
+        }
+        .order-total {
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 0 0 10px 10px;
+            text-align: right;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .paid-status {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .unpaid-status {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="order-list">
+            <div class="order-header">
+                <h2>لیست سفارش‌ها</h2>
+            </div>
+            {% for order in orders %}
+                <a href="{% url 'cart:order_detail' order.id %}">
+            <div class="order-item">
+                <h3>سفارش شماره: {{ order.id }}</h3>
+                <p>تاریخ ایجاد: {{ order.created }}</p>
+                <p>وضعیت: {{ order.get_status_display }}</p>
+                <span>مجموع هزینه: {{ order.get_final_cost }} تومان</span>
+                <span class="{% if order.paid %}paid-status{% else %}unpaid-status{% endif %}">
+                    وضعیت پرداخت: {% if order.paid %}پرداخت شده{% else %}پرداخت نشده{% endif %}
+                </span>
+                <div class="details">
+                    <strong>جزئیات سفارش:</strong>
+                    {% for item in order.items.all %}
+                    <div class="item-details">
+                        <p>{{ item.product.name }} - تعداد: {{ item.quantity }} - قیمت: {{ item.price }} تومان</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+                </a>
+            {% endfor %}
+            <div class="order-total">
+                <strong>مجموع کل سفارش‌ها: {{ orders|length }}</strong>
+            </div>
+        </div>
+    </div>
+{% endblock %}

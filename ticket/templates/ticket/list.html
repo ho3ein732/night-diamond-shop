@@ -1,0 +1,88 @@
+{% extends 'parent/base.html' %}
+{% block title %}لیست تیکت‌ها{% endblock %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .ticket-list {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .ticket {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            clear: both;
+        }
+        .ticket.open {
+            background: #e1ffc7;
+        }
+        .ticket.in_progress {
+            background: #fff3cd;
+        }
+        .ticket.closed {
+            background: #f8d7da;
+        }
+        .ticket a {
+            text-decoration: none;
+            color: #000;
+        }
+        .new-ticket-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+        .new-ticket-button:hover {
+            background: #0056b3;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1>لیست تیکت‌ها</h1>
+        </div>
+        <div class="ticket-list">
+            {% for ticket in tickets %}
+                <div class="ticket {{ ticket.status }}">
+                    <a href="{% url 'ticket:detail_ticket' ticket.id %}">
+                        <h2>{{ ticket.subject }}</h2>
+                        <p>وضعیت تیکت: {{ ticket.get_status_display }}</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{% url 'ticket:create_ticket' %}" class="new-ticket-button">ایجاد تیکت جدید</a>
+    </div>
+{% endblock %}

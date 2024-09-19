@@ -1,0 +1,122 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}سبد خرید{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <h1>سبد خرید شما</h1>
+    {% if cart %}
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>محصول</th>
+                    <th>تعداد</th>
+                    <th>قیمت</th>
+                    <th>جمع کل</th>
+                    <th>تغییر تعداد</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    <tr class="item" data-quantity-id="{{ item.product.id }}">
+                        <td>{{ item.product.name }}</td>
+                        <td class="item-quantity">{{ item.quantity }}</td>
+                        <td>{{ item.price }}</td>
+                        <td class="item-total">{{ item.get_total_price }}</td>
+                        <td>
+                            <span class="decrease-btn">-</span>
+                            <span class="remove-btn">حذف</span>
+                            <span class="add-btn">+</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="cart-summary">
+            <p id="final-post"> هزینه پست: {{ cart.get_post_price }}</p>
+            <p id="final-price">جمع کل: {{ cart.get_final_price }}</p>
+            <a href="{% url 'cart:add_address' %}" class="checkout-btn">ادامــه</a>
+        </div>
+    {% else %}
+        <p>سبد خرید شما خالی است.</p>
+    {% endif %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+$(document).ready(function() {
+    $('.add-btn').click(function (){
+        updateQuantity($(this).closest('.item').data('quantity-id'), 'add');
+    });
+    $('.decrease-btn').click(function (){
+        updateQuantity($(this).closest('.item').data('quantity-id'), 'decrease');
+    });
+    $('.remove-btn').click(function (){
+        removeItem($(this).closest('.item').data('quantity-id'))
+    })
+
+    function updateQuantity(itemID, action) {
+        $.ajax({
+            type: 'POST',
+            url:'{% url "cart:update_quantity" %}',
+            data: {
+                'item_id': itemID,
+                'action': action,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (data) {
+                if (data.success){
+                    $(`.item[data-quantity-id="${itemID}"] .item-quantity`).text(data.quantity);
+                    $(`.item[data-quantity-id="${itemID}"] .item-total`).text(data.total_price);
+                    $('#final-price').text(data.final_price);
+                    $('#cart-item').text(data.item_count);
+
+                    checkCartStatus(data.item_count);
+
+                }
+            },
+            error: function(xhr, status, error) {
+                alert(xhr.responseText);
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+    function removeItem(itemId) {
+      $.ajax({
+      type: 'POST',
+      url: '{% url "cart:remove_item" %}',
+      data: {
+          item_id: itemId,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function(data) {
+          console.log(data)
+          if(data.success){
+              $('#cart-item').text(data.item_count);
+              $('#final-post').text(data.post_price);
+              $('#final-price').text(data.final_price);
+              $(`.item[data-quantity-id=${itemId}]`).remove();
+              checkCartStatus(data.item_count);
+          }
+      },
+      error: function(xhr, status, error) {
+          alert(xhr.responseText);
+          alert('An error' + error)
+      }
+      });
+    }
+    function checkCartStatus(itemCount) {
+      if(itemCount == 0) {
+          $('.cart-table').hide();
+          $('.cart-summary').hide();
+          $('.cart-container').append('<p>سبد خرید شما خالی است.</p>');
+      }else {
+          $('.cart-table').show();
+          $('.cart-summary').show();
+          $('.cart-container p').remove()
+      }
+    }
+});
+</script>
+
+{% endblock %}

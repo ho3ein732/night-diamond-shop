@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتایج جستجو</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .search-header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .search-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        .search-item {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .search-item h3 {
+            margin: 0 0 10px 0;
+        }
+        .search-item p {
+            color: #666;
+        }
+        .search-item a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .search-item a:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="search-header">
+        <h1>نتایج جستجو برای "{{ query }}"</h1>
+    </div>
+
+    <div class="search-results">
+        {% for product in result %}
+        <div class="search-item">
+        {% with product.images.first as images %}
+                <img src="{{ images.file.url }}">
+            {% endwith %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description|truncatewords:20 }}</p>
+            <a href="{% url 'store:post_detail' product.id product.slug %}">مشاهده محصول</a>
+        </div>
+        {% empty %}
+        <p>هیچ محصولی یافت نشد.</p>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
